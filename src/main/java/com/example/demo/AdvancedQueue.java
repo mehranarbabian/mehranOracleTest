@@ -46,18 +46,34 @@ public class AdvancedQueue {
     {
         AQQueueTableProperty qtable_prop;
         AQQueueProperty queue_prop;
-        AQQueueTable             q_table = null;
+        AQQueueTable             q_table ;
+        AQQueue                 queue;
+        AQAgent                  subs1, subs2;
 
 
         qtable_prop = new AQQueueTableProperty("RAW");
+        qtable_prop.setMultiConsumer(true);
 
-       q_table = aq_sess.createQueueTable ("mehran", "aq", qtable_prop);
 
+        q_table = aq_sess.createQueueTable ("mehran", "aq", qtable_prop);
+        System.out.println("Successful createQueueTable");
 
 
         queue_prop = new AQQueueProperty();
 
-        aq_sess.createQueue (q_table, "mehran", queue_prop);
+       queue= aq_sess.createQueue (q_table, "mehran", queue_prop);
+        queue.start();
+        System.out.println("Successful start queue");
+
+        /* Add subscribers to this queue: */
+        subs1 = new AQAgent("GREEN", null, 0);
+        subs2 = new AQAgent("BLUE", null, 0);
+
+        queue.addSubscriber(subs1, null);
+        System.out.println("Successful addSubscriber 1");
+
+        queue.addSubscriber(subs2, "priority < 2");
+        System.out.println("Successful addSubscriber 2");
     }
 
 
